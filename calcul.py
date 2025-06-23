@@ -57,11 +57,12 @@ def process_data(df):
             VH = suma + Vi* ((i-hii)/(H/10 - hii))
             w[i] = int(VH)
             i = i + 1
-        suma = 0;
-        suma = M/densitate(Trez1);
-        suma = suma * (1 + (2/3 * 0.000033 * (20 - Trez1)));
-        VH = suma + Vi;
-        w[i] = int(VH)
+        if(i == H/10):
+            suma = 0;
+            suma = M/densitate(Trez1);
+            suma = suma * (1 + (2/3 * 0.000033 * (20 - Trez1)));
+            VH = suma + Vi;
+            w[i] = int(VH)
         Trez1 = Trez
         hii = H/10
         T = Tvas
@@ -205,7 +206,8 @@ uploaded_file = st.file_uploader("Încarcă fișier CSV", type=["csv"])
 
 if uploaded_file is not None:
     try:
-        input_df = pd.read_csv(uploaded_file)
+        input_df = pd.read_csv(uploaded_file, index_col=False)
+        input_df = input_df.loc[:, ~input_df.columns.str.contains('^Unnamed|^Nr$', case=False)]
         st.success("Fișier CSV încărcat cu succes!")
     except Exception as e:
         st.error(f"Eroare la citirea fișierului CSV: {e}")
@@ -222,7 +224,8 @@ else:
         'Trez': [20],
         'H': [0]
     })
-    input_df = st.data_editor(sample_data, num_rows="dynamic", use_container_width=True)
+    
+    input_df = st.data_editor(sample_data, num_rows="dynamic", use_container_width=True, hide_index=True)
 
 
 if 'output_df' not in st.session_state:
