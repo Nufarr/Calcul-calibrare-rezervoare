@@ -50,13 +50,18 @@ def process_data(df):
         M = sum(m)
         k=k+1
         v.append(Vi)
-        while(i < H/10) :
+        while(i < H/10):
             suma = 0;
             suma = M/densitate(Trez1);
             suma = suma * (1 + (2/3 * 0.000033 * (20 - Trez1)));
             VH = suma + Vi* ((i-hii)/(H/10 - hii))
             w[i] = int(VH)
             i = i + 1
+        suma = 0;
+        suma = M/densitate(Trez1);
+        suma = suma * (1 + (2/3 * 0.000033 * (20 - Trez1)));
+        VH = suma + Vi;
+        w[i] = int(VH)
         Trez1 = Trez
         hii = H/10
         T = Tvas
@@ -98,7 +103,7 @@ def export_input(df):
     doc = Document()
     doc.add_heading('Rezultate Calcul Calibrare Rezervoare', level=1)
     num_cols = 5;
-    max_rows_per_page = 25
+    max_rows_per_page = 20
     total_chunks = ceil(len(df) / (num_cols * max_rows_per_page))
 
     for chunk_index in range(total_chunks):
