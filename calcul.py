@@ -147,7 +147,7 @@ def export_to_word(df):
     doc = Document()
     doc.add_heading('Rezultate Calcul Calibrare Rezervoare', level=1)
     num_cols = 6;
-    max_rows_per_page = 25
+    max_rows_per_page = 20
     total_chunks = ceil(len(df) / (num_cols * max_rows_per_page))
 
     for chunk_index in range(total_chunks):
