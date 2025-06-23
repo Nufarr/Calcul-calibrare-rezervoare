@@ -50,7 +50,7 @@ def process_data(df):
         M = sum(m)
         k=k+1
         v.append(Vi)
-        while(i < H/10) :
+        while(i <= H/10) :
             suma = 0;
             suma = M/densitate(Trez1);
             suma = suma * (1 + (2/3 * 0.000033 * (20 - Trez1)));
@@ -93,13 +93,55 @@ def set_cell_border(cell):
         element.set(qn("w:color"), "000000")
         tcPr.append(element)
 
+def export_input(df):
+    from math import ceil
+    doc = Document()
+    doc.add_heading('Rezultate Calcul Calibrare Rezervoare', level=1)
+    num_cols = 5;
+    max_rows_per_page = 25
+    total_chunks = ceil(len(df) / (num_cols * max_rows_per_page))
+
+    for chunk_index in range(total_chunks):
+        chunk_start = chunk_index * (num_cols * max_rows_per_page)
+        chunk_end = min(chunk_start + (num_cols * max_rows_per_page), len(df))
+        chunk_df = df.iloc[chunk_start:chunk_end]
+
+        total_rows = (len(chunk_df) + num_cols - 1) // num_cols
+        table = doc.add_table(rows=total_rows+1, cols=num_cols*2)
+        table.autofit = True;
+
+        hdr_cells = table.rows[0].cells
+        hdr_cells[1].text = 'Nr'
+        hdr_cells[2].text = 'Vi'
+        hdr_cells[2].text = 'Tvas'
+        hdr_cells[2].text = 'Trez'
+        hdr_cells[2].text = 'H'
+        for i in range(num_cols):
+            set_cell_border(hdr_cells[i])
+        for r in range(total_rows):
+            rows_cells = table.rows[r + 1].cells
+            for c in range(num_cols):
+                idx = (chunk_start) + (r + c * total_rows)
+                if idx < len(df):
+                    rows_cells[1].text = r + 1
+                    rows_cells[2].text = str(df.iloc[idx, 1])
+                    rows_cells[3].text = str(df.iloc[idx, 2])
+                    rows_cells[4].text = str(df.iloc[idx, 3])
+                    rows_cells[5].text = str(df.iloc[idx, 4])
+                set_cell_border(rows_cells[c])
+        doc.add_page_break()
+    buffer = BytesIO()
+    doc.save(buffer)
+    buffer.seek(0)
+    return buffer
+
 # Export to Word document
 def export_to_word(df):
     from math import ceil
     doc = Document()
     doc.add_heading('Rezultate Calcul Calibrare Rezervoare', level=1)
-    num_cols = 4;
-    max_rows_per_page = 20
+    num_cols = 6;
+    max_rows_per_page = 25
     total_chunks = ceil(len(df) / (num_cols * max_rows_per_page))
 
     for chunk_index in range(total_chunks):
