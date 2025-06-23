@@ -6,6 +6,7 @@ from io import BytesIO
 from datetime import datetime
 from docx import Document
 from docx.shared import Inches
+from docx.shared import Pt
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 import json
@@ -145,9 +146,9 @@ def export_input(df):
 def export_to_word(df):
     from math import ceil
     doc = Document()
-    doc.add_heading('Rezultate Calcul Calibrare Rezervoare', level=1)
-    num_cols = 6;
-    max_rows_per_page = 20
+    doc.add_heading('Tabel Calibrare Rezervor', level=1)
+    num_cols = 5;
+    max_rows_per_page = 25
     total_chunks = ceil(len(df) / (num_cols * max_rows_per_page))
 
     for chunk_index in range(total_chunks):
@@ -161,8 +162,14 @@ def export_to_word(df):
 
         hdr_cells = table.rows[0].cells
         for i in range(num_cols):
-            hdr_cells[i*2].text = 'H (cm)'
-            hdr_cells[i*2 + 1].text = 'V (litri)'
+            hdr_cells[i*2].text = ''
+            hdr_run = hdr_cells[i*2].paragraphs[0].add_run('H (cm)')
+            hdr_run.font.size = Pt(8)
+
+            hdr_cells[i*2 + 1].text = ''
+            hdr_run = hdr_cells[i*2 + 1].paragraphs[0].add_run('V (litri)')
+            hdr_run.font.size = Pt(8)
+            
             set_cell_border(hdr_cells[i*2])
             set_cell_border(hdr_cells[i*2 + 1])
         for r in range(total_rows):
@@ -170,8 +177,12 @@ def export_to_word(df):
             for c in range(num_cols):
                 idx = (chunk_start) + (r + c * total_rows)
                 if idx < len(df):
-                    rows_cells[c*2].text = str(df.iloc[idx, 0])
-                    rows_cells[c*2 + 1].text = str(df.iloc[idx, 1])
+                    run = rows_cells[c*2].paragraphs[0].add_run(str(df.iloc[idx, 0]))
+                    run.font.size = Pt(8)
+
+                    run = rows_cells[c*2 + 1].paragraphs[0].add_run(str(df.iloc[idx, 1]))
+                    run.font.size = Pt(8)
+
                 else:
                     rows_cells[c*2].text = ''
                     rows_cells[c*2 + 1].text = ''
