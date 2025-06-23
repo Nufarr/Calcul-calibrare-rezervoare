@@ -50,7 +50,7 @@ def process_data(df):
         M = sum(m)
         k=k+1
         v.append(Vi)
-        while(i <= H/10) :
+        while(i < H/10) :
             suma = 0;
             suma = M/densitate(Trez1);
             suma = suma * (1 + (2/3 * 0.000033 * (20 - Trez1)));
@@ -194,7 +194,31 @@ sample_data = pd.DataFrame({
     'H': [0]
 })
 
-input_df = st.data_editor(sample_data, num_rows="dynamic", use_container_width=True)
+st.write("Alege o metodă pentru a introduce datele:")
+
+uploaded_file = st.file_uploader("Încarcă fișier CSV", type=["csv"])
+
+if uploaded_file is not None:
+    try:
+        input_df = pd.read_csv(uploaded_file)
+        st.success("Fișier CSV încărcat cu succes!")
+    except Exception as e:
+        st.error(f"Eroare la citirea fișierului CSV: {e}")
+        input_df = pd.DataFrame({
+            'Vi': [0],
+            'Tvas': [20],
+            'Trez': [20],
+            'H': [0]
+        })
+else:
+    sample_data = pd.DataFrame({
+        'Vi': [0],
+        'Tvas': [20],
+        'Trez': [20],
+        'H': [0]
+    })
+    input_df = st.data_editor(sample_data, num_rows="dynamic", use_container_width=True)
+
 
 if 'output_df' not in st.session_state:
     st.session_state.output_df = None
