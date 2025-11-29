@@ -9,6 +9,7 @@ from docx.shared import Inches
 from docx.shared import Pt
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 import json
 
 # Database setup
@@ -177,11 +178,15 @@ def export_to_word(df):
             for c in range(num_cols):
                 idx = (chunk_start) + (r + c * total_rows)
                 if idx < len(df):
-                    run = rows_cells[c*2].paragraphs[0].add_run(str(df.iloc[idx, 0]))
+                    p= rows_cells[c*2].paragraphs[0];
+                    run = p.add_run(str(df.iloc[idx, 0]))
                     run.font.size = Pt(8)
+                    p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
 
-                    run = rows_cells[c*2 + 1].paragraphs[0].add_run(str(df.iloc[idx, 1]))
+                    p = rows_cells[c*2 + 1].paragraphs[0];
+                    run = p.add_run(str(df.iloc[idx, 1]))
                     run.font.size = Pt(8)
+                    p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
 
                 else:
                     rows_cells[c*2].text = ''
